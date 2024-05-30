@@ -35,5 +35,23 @@
 
             return result;
         }
+        
+        public static float GetMinimumValueInFloat2DArray(float[,] array)
+        {
+            // Initialize minimum value with the maximum possible float value
+            float minValue = float.MaxValue;
+
+            // Iterate through the array to find the minimum value
+            foreach (float value in array)
+            {
+                if (value < minValue)
+                {
+                    minValue = value;
+                }
+            }
+
+            return minValue;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
@@ -9,6 +10,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEditor.Playables;
+using Debug = UnityEngine.Debug;
 
 namespace InGame
 {
@@ -22,6 +24,8 @@ namespace InGame
         [SerializeField] public int chunkSize;
         [SerializeField] public int baseScale;
         [SerializeField] public int height;
+
+        [SerializeField] public float waterLevel;
     }
     
     public class ChunkGenerator : MonoBehaviour
@@ -72,12 +76,14 @@ namespace InGame
                         {
                             float noiseValue = Unity.Mathematics.noise.snoise(
                                 new Unity.Mathematics.float2(
-                                    (startX + x + NoiseOffsetSize * offsets[octaveIndex].x) 
+                                    (startX + x + NoiseOffsetSize * offsets[octaveIndex].x)
                                     * frequency / config.baseScale,
-                                    (startZ + z + NoiseOffsetSize * offsets[octaveIndex].y) 
+                                    (startZ + z + NoiseOffsetSize * offsets[octaveIndex].y)
                                     * frequency / config.baseScale
                                 )
-                            ) * amplitude;
+                            );
+                            
+                            noiseValue = (noiseValue + 1) / 2.0f * amplitude;
 
                             noiseSum += noiseValue;
                             weightSum += amplitude;
@@ -113,6 +119,7 @@ namespace InGame
         private Dictionary<Vector2Int, JobHandle> chunkGenerationJobs;
         private Dictionary<Vector2Int, NativeArray<float>> chunkGenerationResult;
         private Dictionary<Vector2Int, Chunk> loadedChunks;
+        private Dictionary<Vector2Int, Water> loadedWaters;
 
         private List<Vector2Int> jobsToRemove;
         private List<Vector2Int> chunksToRemove;
@@ -176,6 +183,11 @@ namespace InGame
             foreach (var chunkPos in chunksToRemove)
             {
                 loadedChunks.Remove(chunkPos);
+                if (loadedWaters.ContainsKey(chunkPos))
+                {
+                    loadedWaters[chunkPos].RemoveWater();
+                    loadedWaters.Remove(chunkPos);
+                }
             }
             
             // Load chunks within render distance
@@ -209,55 +221,97 @@ namespace InGame
             }
         }
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
             chunksToRemove = new List<Vector2Int>();
             jobsToRemove = new List<Vector2Int>();
             
-            lastPlayerPosition = player.transform.position;
-            
             loadedChunks = new Dictionary<Vector2Int, Chunk>();
+            loadedWaters = new Dictionary<Vector2Int, Water>();
             chunkGenerationJobs = new Dictionary<Vector2Int, JobHandle>();
             chunkGenerationResult = new Dictionary<Vector2Int, NativeArray<float>>();
-            
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            lastPlayerPosition = player.transform.position;
             InitialChunkGeneration();
+        }
+
+        IEnumerator GenerateGameObjects(Dictionary<Vector2Int, NativeArray<float>> heightmaps)
+        {
+            foreach (var heightmapPair in heightmaps)
+            {
+                var rawHeightmap = heightmapPair.Value;
+                var chunkPos = heightmapPair.Key;
+                
+                if(loadedChunks.ContainsKey(chunkPos)) continue;
+                    
+                var heightmap = Dimensional.Convert1DTo2D<float>(
+                    rawHeightmap.ToArray(), 
+                    config.chunkSize + 1, 
+                    config.chunkSize + 1
+                );
+                    
+                var actualChunkPosition = new Vector3(chunkPos.x * config.chunkSize, 0, chunkPos.y * config.chunkSize);
+
+                //yield return null;
+
+                var chunk = ChunkPoolManager.Instance.Pool.Get();
+                    
+                chunk.name = $"Chunk({chunkPos.x},{chunkPos.y})";
+                chunk.transform.position = actualChunkPosition;
+                    
+                var chunkComponent = chunk.GetComponent<Chunk>();
+                    
+                chunkComponent.InitChunk(heightmap, config);
+                loadedChunks.Add(chunkPos, chunkComponent);
+
+                var minHeight = Dimensional.GetMinimumValueInFloat2DArray(heightmap);
+
+                if (minHeight < config.waterLevel)
+                {
+                    var water = WaterPoolManager.Instance.Pool.Get();
+                    
+                    water.name = $"Water({chunkPos.x},{chunkPos.y})";
+                    water.transform.position =
+                        actualChunkPosition
+                        + config.waterLevel * config.height * Vector3.up
+                        + config.chunkSize / 2.0f * Vector3.right
+                        + config.chunkSize / 2.0f * Vector3.forward;
+
+                    var waterComponent = water.GetComponent<Water>();
+                    waterComponent.InitWater(heightmap, config);
+                    loadedWaters.Add(chunkPos, waterComponent);
+                }
+
+                rawHeightmap.Dispose();
+                yield return null;
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
             jobsToRemove.Clear();
-            
+
+            Dictionary<Vector2Int, NativeArray<float>> heightmaps = new Dictionary<Vector2Int, NativeArray<float>>();
+
             // Update Job Dictionary
             foreach (var job in chunkGenerationJobs)
             {
                 if (job.Value.IsCompleted)
                 {
                     job.Value.Complete(); // Ensure the job is completed before disposing
-                    var rawHeightmap = chunkGenerationResult[job.Key];
+                    heightmaps[job.Key] = chunkGenerationResult[job.Key];
                     
-                    var heightmap = Dimensional.Convert1DTo2D<float>(
-                        rawHeightmap.ToArray(), 
-                        config.chunkSize + 1, 
-                        config.chunkSize + 1
-                    );
-
-                    var chunk = ChunkPoolManager.Instance.Pool.Get();
-                    
-                    var actualChunkPosition = new Vector3(job.Key.x * config.chunkSize, 0, job.Key.y * config.chunkSize);
-                    chunk.name = "Chunk_" + job.Key.x + "_" + job.Key.y;
-                    chunk.transform.position = actualChunkPosition;
-                    
-                    var chunkComponent = chunk.GetComponent<Chunk>();
-                    chunkComponent.SetTerrainData(heightmap, config);
-
-                    rawHeightmap.Dispose();
-                    
-                    loadedChunks.Add(job.Key, chunkComponent);
                     jobsToRemove.Add(job.Key);
                 }
             }
+
+            if (heightmaps.Count > 0) StartCoroutine(GenerateGameObjects(heightmaps));
+            
             
             foreach (var job in jobsToRemove)
             {
@@ -270,6 +324,7 @@ namespace InGame
                 UpdateChunks();
                 lastPlayerPosition = player.transform.position;
             }
+            
         }
 
         void OnDestroy()

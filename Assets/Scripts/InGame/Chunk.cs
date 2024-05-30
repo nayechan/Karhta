@@ -6,7 +6,8 @@ namespace InGame
 {
     public class Chunk : MonoBehaviour
     {
-        [SerializeField] private Texture texture;
+        [SerializeField] private TerrainLayer[] terrainLayers;
+        [SerializeField] private Material terrainMaterial;
         private Vector2Int chunkPos;
         public IObjectPool<GameObject> Pool { get; set; }
 
@@ -32,7 +33,7 @@ namespace InGame
             return true;
         }
 
-        public void SetTerrainData(float[,] heightmap, ChunkGenerationConfiguration config)
+        public void InitChunk(float[,] heightmap, ChunkGenerationConfiguration config)
         {
             var pos = transform.position;
             
@@ -46,9 +47,11 @@ namespace InGame
             terrainData.heightmapResolution = config.chunkSize + 1;
             terrainData.size = new Vector3(config.chunkSize, config.height, config.chunkSize);
             terrainData.SetHeights(0, 0, heightmap);
+
+            terrainData.terrainLayers = terrainLayers;
+            terrain.materialTemplate = terrainMaterial;
             
             int alphamapResolution = terrainData.alphamapResolution;
-            // int heightmapResolution = terrainData.heightmapResolution;
             float[,,] splatmapData = new float[alphamapResolution, alphamapResolution, terrainData.alphamapLayers];
             
             for (int y = 0; y < alphamapResolution; ++y)

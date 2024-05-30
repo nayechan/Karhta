@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f135880061d02dd4b9153caf7d00424f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.15164664, g: 0.22182053, b: 0.31274855, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -182,7 +182,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 768
+  far clip plane: 2048
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -427,6 +427,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &898329395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 898329397}
+  - component: {fileID: 898329396}
+  m_Layer: 0
+  m_Name: Waters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &898329396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898329395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d585723231ba4d60a73d88eddb439d1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 512
+  maxCapacity: 1024
+  waterPrefab: {fileID: 182428585148720366, guid: dbff0c1a0966b434483894751d0ded2d,
+    type: 3}
+--- !u!4 &898329397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898329395}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1567845875
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,10 +508,11 @@ MonoBehaviour:
     seed: 1
     lacunarity: 2
     persistence: 0.5
-    chunkSize: 64
+    chunkSize: 256
     baseScale: 128
     height: 256
-  renderDistance: 13
+    waterLevel: 0.5
+  renderDistance: 9
   player: {fileID: 1792228462}
 --- !u!4 &1567845877
 Transform:
@@ -491,7 +540,7 @@ GameObject:
   - component: {fileID: 1775847182}
   - component: {fileID: 1775847181}
   m_Layer: 0
-  m_Name: ChunkPoolManager
+  m_Name: Chunks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -509,8 +558,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fc622f0df2f444dbe0e74cece333297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCapacity: 1024
-  maxCapacity: 2048
+  defaultCapacity: 512
+  maxCapacity: 1024
   chunkPrefab: {fileID: 4623801062457826748, guid: ac4d6dade803bb04897ec558f0465b07,
     type: 3}
 --- !u!4 &1775847182
@@ -572,7 +621,7 @@ Transform:
   m_GameObject: {fileID: 1792228461}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 20, z: -10.34}
+  m_LocalPosition: {x: 0, y: 256, z: -10.34}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -675,7 +724,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -685,4 +734,5 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1567845877}
   - {fileID: 1775847182}
+  - {fileID: 898329397}
   - {fileID: 1792228463}

@@ -46,7 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd324e66c9984ead9c8151bbb95caa4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texture: {fileID: 0}
+  terrainLayers:
+  - {fileID: 8574412962073106934, guid: 4d3eca6447f2073418d99a26018de329, type: 2}
+  terrainMaterial: {fileID: 2100000, guid: d3b0653aa0c1a1746a6ca6c3138aaec9, type: 2}
 --- !u!218 &4922024538180194608
 Terrain:
   m_ObjectHideFlags: 0
@@ -56,7 +58,7 @@ Terrain:
   m_GameObject: {fileID: 4623801062457826748}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: ef7941d1ff54a204e9275af5926e4f9d, type: 2}
+  m_TerrainData: {fileID: 0}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5

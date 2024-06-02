@@ -36,6 +36,8 @@ namespace InGame
             Vector3 movement = transform.forward * (verticalInput * moveSpeed * Time.deltaTime);
             
             rb.MovePosition(rb.position + movement);
+            // Perform collision detection and response
+            DetectAndHandleCollisions();
         }
 
         public Vector2Int GetPlayerChunkPos(int chunkSize)
@@ -58,8 +60,32 @@ namespace InGame
             var xzPosition = chunkPosition * config.chunkSize + blockPosition;
             var yPosition = height * config.height + 1.0f;
             transform.position = new Vector3(xzPosition.x, yPosition, xzPosition.y);
-            
-            rb.isKinematic = false;
+        }
+
+        public void SetIsKinematic(bool _isKinematic)
+        {
+            rb.isKinematic = _isKinematic;
+        }
+
+        private void DetectAndHandleCollisions()
+        {
+            // Perform collision detection using Raycast or OnCollisionEnter, depending on your needs
+            // For simplicity, let's assume you're using a capsule collider for the player
+            CapsuleCollider collider = GetComponent<CapsuleCollider>();
+
+            // Perform a downward raycast to check if the player is above water or terrain
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, collider.height / 2 + 0.1f))
+            {
+                // Check if the hit object is tagged as water or terrain
+                if (hit.collider.CompareTag("Water") || hit.collider.CompareTag("Terrain"))
+                {
+                    // Prevent further downward movement
+                    rb.velocity = Vector3.zero;
+                    // Optionally, you can push the player upwards or apply other actions
+                    // Example: transform.position += hit.normal * 0.1f; // Move up along the collision normal
+                }
+            }
         }
     }
 }

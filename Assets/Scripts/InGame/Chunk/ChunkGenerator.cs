@@ -77,12 +77,29 @@ namespace InGame.Chunk
 
             await UniTask.WaitUntil(() =>
             {
-                return isPlayerSpawned && loadedChunks.ContainsKey(player.GetPlayerChunkPos(config.chunkSize));
+                return isPlayerSpawned && IsChunkLoaded(player.GetPlayerChunkPos(config.chunkSize), 2);
             });
             
+            player.SetIsKinematic(false);
             backdrop.Deactivate();
         }
 
+        public bool IsChunkLoaded(Vector2Int chunkPos, int distance=1)
+        {
+            for (int dx = -distance + 1; dx <= distance - 1; ++dx)
+            {
+                for (int dy = -distance + 1; dy <= distance - 1; ++dy)
+                {
+                    if (!loadedChunks.ContainsKey(chunkPos + dx * Vector2Int.right + dy * Vector2Int.up))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+        
         private JobHandle GenerateChunk(Vector2Int chunkPos)
         {
             var heightmap = new NativeArray<float>(

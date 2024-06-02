@@ -66,5 +66,10 @@ namespace InGame.Chunk
             terrain.terrainData = terrainData;
             terrainCollider.terrainData = terrainData;
         }
+
+        public TerrainData GetTerrainData()
+        {
+            return terrain.terrainData;
+        }
     }
 }

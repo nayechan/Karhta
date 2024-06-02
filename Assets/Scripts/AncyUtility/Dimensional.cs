@@ -1,4 +1,6 @@
-﻿namespace AncyUtility
+﻿using UnityEngine;
+
+namespace AncyUtility
 {
     public class Dimensional
     {
@@ -52,6 +54,66 @@
 
             return minValue;
         }
+        
+        public static Vector2Int GetMinimumIndexInFloat2DArray(float[,] array)
+        {
+            // Initialize minimum value with the maximum possible float value
+            float minValue = float.MaxValue;
+            var minIndex = new Vector2Int(0, 0);
 
+            // Iterate through the array to find the minimum value
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (array[i,j] < minValue)
+                    {
+                        minValue = array[i, j];
+                        minIndex = new Vector2Int(i, j);
+                    }
+                }
+            }
+
+            return minIndex;
+        }
+        
+        public static float GetMaximumValueInFloat2DArray(float[,] array)
+        {
+            // Initialize maximum value with the minimum possible float value
+            float maxValue = float.MinValue;
+
+            // Iterate through the array to find the maximum value
+            foreach (float value in array)
+            {
+                if (value > maxValue)
+                {
+                    maxValue = value;
+                }
+            }
+
+            return maxValue;
+        }
+        
+        public static Vector2Int GetMaximumIndexInFloat2DArray(float[,] array)
+        {
+            // Initialize minimum value with the maximum possible float value
+            float maxValue = float.MaxValue;
+            var maxIndex = new Vector2Int(0, 0);
+
+            // Iterate through the array to find the minimum value
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (array[i,j] > maxValue)
+                    {
+                        maxValue = array[i, j];
+                        maxIndex = new Vector2Int(i, j);
+                    }
+                }
+            }
+
+            return maxIndex;
+        }
     }
 }

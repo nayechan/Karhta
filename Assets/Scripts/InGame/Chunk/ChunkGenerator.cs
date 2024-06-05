@@ -5,6 +5,7 @@ using AncyUtility;
 using Cysharp.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace InGame.Chunk
@@ -80,7 +81,7 @@ namespace InGame.Chunk
                 return isPlayerSpawned && IsChunkLoaded(player.GetPlayerChunkPos(config.chunkSize), 2);
             });
             
-            player.SetIsKinematic(false);
+            player.SetIsGravityPresent(true);
             backdrop.Deactivate();
         }
 

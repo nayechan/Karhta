@@ -278,8 +278,13 @@ MonoBehaviour:
   rotationSpeed: 2
   gravityValue: -9.81
   jumpHeight: 2
-  isSpawned: 0
+  currentXP: 0
+  currentLevel: 1
+  listeningGameObjects: []
   isGravityPresent: 0
+  boxCastSize: {x: 0, y: 0, z: 0}
+  boxCastOffset: {x: 0, y: 0, z: 0}
+  drawGizmo: 0
 --- !u!4 &3605346664765707517 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400074, guid: 8f0565f23a2b58541a475bd3c1393052,

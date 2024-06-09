@@ -6,11 +6,11 @@ namespace AncyUtility
     public class PriorityQueue<T>
     {
         private readonly List<T> heap;
-        private readonly Func<T, T, int> comparer;
+        private readonly Func<T, T, float> comparer;
 
         public int Count => heap.Count;
 
-        public PriorityQueue(Func<T, T, int> comparer)
+        public PriorityQueue(Func<T, T, float> comparer)
         {
             this.heap = new List<T>();
             this.comparer = comparer;
@@ -41,6 +41,29 @@ namespace AncyUtility
             return min;
         }
 
+        public T Peek()
+        {
+            if (Count == 0)
+                throw new InvalidOperationException("Priority queue is empty");
+            return heap[0];
+        }
+
+        public bool Remove(T item)
+        {
+            int index = heap.IndexOf(item);
+            if (index < 0)
+                return false;
+            heap[index] = heap[Count - 1];
+            heap.RemoveAt(Count - 1);
+            Heapify(index);
+            return true;
+        }
+
+        public bool Contains(T item)
+        {
+            return heap.Contains(item);
+        }
+
         private void Heapify(int i)
         {
             while (true)
@@ -64,6 +87,11 @@ namespace AncyUtility
         private void Swap(int i, int j)
         {
             (heap[i], heap[j]) = (heap[j], heap[i]);
+        }
+
+        public void Clear()
+        {
+            heap.Clear();
         }
     }
 }

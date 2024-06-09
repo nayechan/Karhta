@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2833093298135412915}
   - component: {fileID: 4922024538180194608}
   - component: {fileID: 7194914080751960028}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Chunk
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,7 +95,7 @@ TerrainCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4623801062457826748}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 4bf51e335796dbe40a144ec9290eaa56, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

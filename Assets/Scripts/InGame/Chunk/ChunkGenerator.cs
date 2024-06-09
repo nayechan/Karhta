@@ -14,7 +14,7 @@ namespace InGame.Chunk
     {
         [SerializeField] private ChunkGenerationConfiguration config;
         [SerializeField] private int renderDistance;
-        [SerializeField] private Player player;
+        [SerializeField] private Player.Player player;
         [SerializeField] private Backdrop backdrop;
 
         private Vector3 lastPlayerPosition;
@@ -303,5 +303,70 @@ namespace InGame.Chunk
             chunkGenerationJobs.Clear();
             chunkGenerationResult.Clear();
         }
+
+        public Chunk GetChunk(Vector2Int chunkPos)
+        {
+            loadedChunks.TryGetValue(chunkPos, out var chunk);
+
+            return chunk;
+        }
+
+        public float GetSteepness(Vector2 pos)
+        {
+            var chunkPos = new Vector2Int(
+                Mathf.CeilToInt(pos.x / config.chunkSize), 
+                Mathf.CeilToInt(pos.y / config.chunkSize));
+            
+            var internalPos = new Vector2(pos.x % config.chunkSize, pos.y % config.chunkSize);
+
+            Chunk chunk = GetChunk(chunkPos);
+
+            if (chunk == null)
+                return float.PositiveInfinity;
+
+            var terrainData = chunk.GetTerrainData();
+            var normalizedPos = internalPos / config.chunkSize;
+
+            return terrainData.GetSteepness(normalizedPos.x, normalizedPos.y);
+        }
+        
+        public ChunkGenerationConfiguration GetConfig(){return config;}
+
+        public float GetHeight(Vector2 pos)
+        {
+            var chunkPos = new Vector2Int(
+                Mathf.CeilToInt(pos.x / config.chunkSize), 
+                Mathf.CeilToInt(pos.y / config.chunkSize));
+            
+            var internalPos = new Vector2(pos.x % config.chunkSize, pos.y % config.chunkSize);
+
+            Chunk chunk = GetChunk(chunkPos);
+
+            if (chunk == null)
+                return 0;
+
+            var terrainData = chunk.GetTerrainData();
+            var normalizedPos = internalPos / config.chunkSize;
+
+            return terrainData.GetInterpolatedHeight(normalizedPos.x, normalizedPos.y);
+        }
+        
+        public float GetHeightInt(Vector2Int pos)
+        {
+            var chunkPos = new Vector2Int(pos.x / config.chunkSize, pos.y / config.chunkSize);
+            
+            var internalPos = new Vector2Int(pos.x % config.chunkSize, pos.y % config.chunkSize);
+
+            Chunk chunk = GetChunk(chunkPos);
+
+            if (chunk == null)
+                return 0;
+
+            var terrainData = chunk.GetTerrainData();
+            var normalizedPos = internalPos / config.chunkSize;
+
+            return terrainData.GetHeight(internalPos.x, internalPos.y);
+        }
+        
     }
 }

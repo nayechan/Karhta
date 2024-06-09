@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using InGame.Tree;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Pool;
 
 namespace InGame.Chunk
@@ -20,11 +22,17 @@ namespace InGame.Chunk
             terrainCollider = GetComponent<TerrainCollider>();
         }
 
+        private void GenerateTrees()
+        {
+            TreeGenerator.Instance.GenerateTrees(chunkPos).Forget();
+        }
+
         public bool UpdateChunk(RectInt renderRect)
         {
             // Unload chunks outside render distance
             if (!renderRect.Contains(chunkPos))
             {
+                TreeGenerator.Instance.UnloadTrees(chunkPos).Forget();
                 Pool.Release(gameObject);
                 return false;
             }
@@ -65,6 +73,8 @@ namespace InGame.Chunk
             
             terrain.terrainData = terrainData;
             terrainCollider.terrainData = terrainData;
+            
+            GenerateTrees();
         }
 
         public TerrainData GetTerrainData()

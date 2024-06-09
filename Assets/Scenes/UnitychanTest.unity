@@ -491,6 +491,8 @@ MonoBehaviour:
   currentZoomDistance: 4
   minZoomDistance: 2
   maxZoomDistance: 8
+  adjustedZoomDistance: 0
+  currentMouseOffset: 10
 --- !u!1 &690607625
 GameObject:
   m_ObjectHideFlags: 0

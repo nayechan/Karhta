@@ -2,6 +2,7 @@
 using System.Linq;
 using InGame.Battle;
 using InGame.Chunk;
+using InGame.Item;
 using UnityEngine;
 
 namespace InGame.Player
@@ -15,12 +16,12 @@ namespace InGame.Player
         public float jumpHeight = 2f;
 
         
-        public long currentXP = 0;
         public long currentLevel = 1;
 
+        public long CurrentXP { get; private set; }
         public long CurrentHp { get; private set; }
         public bool isSpawned { get; private set; }
-        public long MaxHp => currentLevel * 17 + 4;
+        public long MaxHp => currentLevel * 17 + 4 + Mathf.CeilToInt(PlayerStatData.StatHp);
         
         public long MaxXp => (long)(Mathf.Pow(currentLevel, 1.4f) * 14) + 15;
 
@@ -30,6 +31,12 @@ namespace InGame.Player
         private Vector3 playerVelocity;
         private AnimatorStateInfo stateInfo;
         private List<IDamageable> damageablesInArea;
+        private List<IPlayerListener> playerListeners;
+        private Weapon currentWeapon;
+
+        public ItemData PlayerItemData { get; private set; }
+        public QuickSlotData PlayerQuickSlotData { get; private set; }
+        public StatData PlayerStatData { get; private set; }
         
         private float horizontalInput, verticalInput;
         private float speedMultiplier = 1.0f;
@@ -37,14 +44,17 @@ namespace InGame.Player
         private int waterTriggersCount = 0;
         private bool isUnderWater;
 
-        [SerializeField] private List<GameObject> listeningGameObjects;
         [SerializeField] private bool isGravityPresent = false;
         [SerializeField] private Vector3 boxCastSize, boxCastOffset;
+        [SerializeField] private List<Transform> playerListenerScanTransforms;
+        [SerializeField] private Transform weaponTransform;
+        [SerializeField] private QuickSlotInputSetting inputSetting;
         
         private static readonly int HorizontalSpeed = Animator.StringToHash("HorizontalSpeed");
         private static readonly int VerticalSpeed = Animator.StringToHash("VerticalSpeed");
         private static readonly int JumpTrigger = Animator.StringToHash("Jump");
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
+        
 
         private partial void ApplyGravity();
         private partial void TeleportToPosition(Vector3 newPosition);
@@ -62,18 +72,37 @@ namespace InGame.Player
             characterController = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
 
+            playerListeners = new List<IPlayerListener>();
+
+            foreach (var playerListenerScanTransform in playerListenerScanTransforms)
+            {
+                playerListeners.AddRange(
+                    playerListenerScanTransform.GetComponentsInChildren<IPlayerListener>(true)
+                        .ToList());
+            }
+
             damageablesInArea = new List<IDamageable>();
 
+            PlayerItemData = new ItemData();
+            PlayerItemData.AddCount("Silver Sword", 1);
+            PlayerItemData.AddCount("Small HP Potion", 50);
+            PlayerItemData.AddCount("Medium HP Potion", 50);
+            PlayerItemData.AddCount("Large HP Potion", 50);
+
+            PlayerQuickSlotData = new QuickSlotData();
+            PlayerStatData = new StatData();
+
             CurrentHp = MaxHp;
-            currentXP = 0;
+            CurrentXP = 0;
+            currentWeapon = null;
         }
 
         private void Start()
         {
             // Find the CameraController component in the scene
             if (Camera.main != null) cameraController = Camera.main.GetComponent<CameraController>();
-            
-            Refresh();
+
+            GameStateController.Instance.OnGameLoadFinish += Refresh;
         }
 
         private void Update()
@@ -119,6 +148,8 @@ namespace InGame.Player
                 Move(horizontalInput, verticalInput);
             
             RotatePlayer();
+
+            QuickSlotAction();
         }
 
         public void Spawn(
@@ -148,14 +179,28 @@ namespace InGame.Player
 
         public void Refresh()
         {
-            foreach (var listeningGameObject in listeningGameObjects)
+            foreach (var playerListener in playerListeners)
             {
-                var components = listeningGameObject.GetComponents<IPlayerListener>();
-                foreach (var component in components)
-                {
-                    component.OnPlayerRefresh(this);
-                }
+                playerListener.OnPlayerRefresh(this);
             }
+        }
+
+        public void AddPlayerListener(IPlayerListener listener)
+        {
+            playerListeners.Add(listener);
+        }
+
+        public void RemovePlayerListener(IPlayerListener listener)
+        {
+            playerListeners.Remove(listener);
+        }
+
+        public string GetKeyBind(int index)
+        {
+            if (inputSetting.KeyBind.Length <= index) return "";
+            var keyBind = inputSetting.KeyBind[index];
+
+            return keyBind.ToString();
         }
 
         private bool IsGrounded()

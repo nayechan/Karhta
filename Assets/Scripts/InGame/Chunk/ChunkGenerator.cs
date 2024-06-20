@@ -15,7 +15,6 @@ namespace InGame.Chunk
         [SerializeField] private ChunkGenerationConfiguration config;
         [SerializeField] private int renderDistance;
         [SerializeField] private Player.Player player;
-        [SerializeField] private Backdrop backdrop;
 
         private Vector3 lastPlayerPosition;
         private bool isPlayerSpawned;
@@ -62,12 +61,11 @@ namespace InGame.Chunk
         private void Start()
         {
             lastPlayerPosition = player.transform.position;
-            InitChunkGenerator().Forget();
+            //InitChunkGenerator().Forget();
         }
 
-        private async UniTaskVoid InitChunkGenerator()
+        public async UniTask InitChunkGenerator()
         {
-            backdrop.Activate("Loading Chunks ...");
             for (int x = -renderDistance; x <= renderDistance; ++x)
             {
                 for (int z = -renderDistance; z <= renderDistance; ++z)
@@ -82,7 +80,6 @@ namespace InGame.Chunk
             });
             
             player.SetIsGravityPresent(true);
-            backdrop.Deactivate();
         }
 
         public bool IsChunkLoaded(Vector2Int chunkPos, int distance=1)

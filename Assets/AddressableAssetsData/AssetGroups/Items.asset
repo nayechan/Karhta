@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Items
+  m_EditorClassIdentifier: 
+  m_GroupName: Items
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ab02de1440519674ebd66f96653bc077
+  m_SerializeEntries:
+  - m_GUID: ce4ac40f716269247bc800372c420976
+    m_Address: Silver Sword
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4282264d17dc3d4c93e13b0ff455e51
+    m_Address: Small HP Potion
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f69ebe5163da8f4f9378c7add1c7230
+    m_Address: Medium HP Potion
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c49f3c6cfa91484981375637d3f17c3
+    m_Address: Large HP Potion
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e978e1d5f984e0945b039f8fcbcaef30, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 100f22cca4a3d3840bfbb313dbe1ed85, type: 2}
+    - {fileID: 11400000, guid: 1b40c49f9d1d33e4899d9b2d35da417b, type: 2}

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24941fc08dc74fd5b37008f7e1ba6197, type: 3}
-  m_Name: Silver Sword
+  m_Script: {fileID: 11500000, guid: 4b51337487484c308ce7e7f55a69c225, type: 3}
+  m_Name: Large HP Potion
   m_EditorClassIdentifier: 
-  damagePoint: 5
-  weaponPrefab: {fileID: 8449004803641222730, guid: 635b9c60fe8860a4e9a5ab1a4658720f,
-    type: 3}
+  <MaxStack>k__BackingField: 99
+  itemImage: {fileID: 859011972, guid: 83b6087b3304ddc4497eb7b336f74cab, type: 3}
+  amount: 20

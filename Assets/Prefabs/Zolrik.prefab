@@ -112,8 +112,8 @@ MonoBehaviour:
   damageAmount: 4
   xp: 4
   path: []
-  <MaxHp>k__BackingField: 16
-  <CurrentHp>k__BackingField: 16
+  <MaxHp>k__BackingField: 12
+  <CurrentHp>k__BackingField: 12
 --- !u!136 &6258857556018976419
 CapsuleCollider:
   m_ObjectHideFlags: 0

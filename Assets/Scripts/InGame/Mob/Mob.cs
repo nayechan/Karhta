@@ -315,7 +315,7 @@ namespace InGame.Mob
 
         public void DropItem()
         {
-            player.currentXP += xp;
+            player.GainXP(xp);
             player.Refresh();
         }
 

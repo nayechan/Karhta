@@ -20,10 +20,15 @@ namespace InGame.Player
 
         public void AddCount(string itemId, int amount)
         {
+            var maxStack = AddressableHelper.Instance.GetItem(itemId).MaxStack;
+            
             if (!itemCount.TryAdd(itemId, amount))
             {
                 itemCount[itemId] += amount;
             }
+
+            if (itemCount[itemId] > maxStack)
+                itemCount[itemId] = maxStack;
         }
 
         public void ReduceCount(string itemId, int amount)

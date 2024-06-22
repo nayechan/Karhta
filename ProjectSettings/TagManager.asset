@@ -7,6 +7,9 @@ TagManager:
   - Water
   - Ground
   - Mob
+  - Dropitem
+  - Tree
+  - Mineral
   layers:
   - Default
   - TransparentFX
@@ -20,7 +23,7 @@ TagManager:
   - Boat
   - Tree
   - Mob
-  - 
+  - DropItem
   - 
   - 
   - 

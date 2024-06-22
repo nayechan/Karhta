@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace InGame
@@ -11,7 +13,9 @@ namespace InGame
     
         private Rigidbody rb;
         private float moveInput, turnInput;
+        private Player.Player player;
         [SerializeField] private bool isControlled = false;
+        
 
         // Start is called before the first frame update
         private void Start()
@@ -32,6 +36,15 @@ namespace InGame
             {
                 moveInput = 0;
                 turnInput = 0;
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && player != null)
+            {
+                if (!isControlled)
+                    Board(player.transform);
+
+                else
+                    Unboard(player.transform);
             }
 
         }
@@ -58,16 +71,41 @@ namespace InGame
             rb.MoveRotation(rb.rotation * turnRotation);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            var collidedTransform = other.transform;
+            if (collidedTransform.CompareTag("Player"))
+            {
+                 player = collidedTransform.GetComponent<Player.Player>();
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            var collidedTransform = other.transform;
+            if (collidedTransform.CompareTag("Player"))
+            {
+                player = null;
+            }
+        }
+
         public void Board(Transform targetTransform)
         {
+            targetTransform.GetComponent<CharacterController>().enabled = false;
             targetTransform.SetParent(boardTransform);
             targetTransform.localPosition = new Vector3(0, 0, 0);
+            targetTransform.localRotation = Quaternion.identity;
+            targetTransform.GetComponent<Animator>().SetBool("Boating", true);
+            
             isControlled = true;
         }
 
         public void Unboard(Transform targetTransform)
         {
+            targetTransform.GetComponent<CharacterController>().enabled = true;
+            targetTransform.GetComponent<Animator>().SetBool("Boating", false);
             targetTransform.SetParent(null, true);
+            targetTransform.localRotation = Quaternion.identity;
             isControlled = false;
         }
     }

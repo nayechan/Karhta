@@ -14,9 +14,9 @@ namespace InGame.UI
             text.text = string.Format("Lv. {0:N0}", amount);
         }
 
-        public void OnPlayerRefresh(Player.Player player)
+        public void OnPlayerRefresh(Player.Player _player)
         {
-            Refresh(player.currentLevel);
+            Refresh(_player.currentLevel);
         }
     }
 }

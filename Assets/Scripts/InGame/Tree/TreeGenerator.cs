@@ -1,16 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace InGame.Tree
 {
+    [Serializable]
+    public struct TreeGeneratorData
+    {
+        public GameObject prefab;
+        public int weight;
+        public int minHeight;
+        public int maxHeight;
+    }
+    
     public class TreeGenerator : MonoBehaviour
     {
         public static TreeGenerator Instance { get; private set; }
 
-        public GameObject[] treePrefabs;
+        public TreeGeneratorData[] treeGenerationDataset;
         public int distanceWithOther = 8;
 
         private Dictionary<Vector2Int, List<Tree>> trees;
@@ -20,6 +32,28 @@ namespace InGame.Tree
         [SerializeField] private float maxHeight = 256.0f;
         private int treeGenerationAttemptCount = 4;
         private int batchSize = 32;
+
+        private GameObject GetTree(float height)
+        {
+            var filteredDataset = treeGenerationDataset
+                .Where(x => x.minHeight <= height && height <= x.maxHeight).ToList();
+            
+            var totalWeight = filteredDataset.Sum(x => x.weight);
+
+            if (totalWeight <= 0) return null;
+            
+            var randomValue = Random.Range(0, totalWeight);
+
+            foreach (var treeGenerationData in filteredDataset)
+            {
+                if (randomValue < treeGenerationData.weight)
+                    return treeGenerationData.prefab;
+
+                randomValue -= treeGenerationData.weight;
+            }
+
+            return null;
+        }
 
         private void Awake()
         {
@@ -51,8 +85,8 @@ namespace InGame.Tree
             foreach (var treePoint in treePoints)
             {
                 GameObject prefabToGenerate = null;
-                if (treePrefabs.Length > 0)
-                    prefabToGenerate = treePrefabs[Random.Range(0, treePrefabs.Length)];
+                if (treeGenerationDataset.Length > 0)
+                    prefabToGenerate = GetTree(treePoint.y);
 
                 if (prefabToGenerate != null)
                 {

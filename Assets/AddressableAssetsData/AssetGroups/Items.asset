@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: ab02de1440519674ebd66f96653bc077
   m_SerializeEntries:
   - m_GUID: ce4ac40f716269247bc800372c420976
-    m_Address: Silver Sword
+    m_Address: Stone Sword
     m_ReadOnly: 0
     m_SerializedLabels:
     - item
@@ -37,6 +37,72 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9c49f3c6cfa91484981375637d3f17c3
     m_Address: Large HP Potion
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e3003f0ca8daf94cb6812c9c84d13ee
+    m_Address: Wooden Axe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7367d9ecb3b94524d91a3c9190d81d64
+    m_Address: Stone Axe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b82eb65362d0f3458bbcab2a3875eff
+    m_Address: Iron Axe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79388218395e3e442adc8f23e1a6e48f
+    m_Address: Iron Pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56f2e79d662638c438ad513b90b0d268
+    m_Address: Stone Pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 055709267a8652f41b12db23cf181a1c
+    m_Address: Wooden Pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fa5be3a6375495499f57fa89215f486
+    m_Address: Wood
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc4c8fdd07bf71040b6cbeafa79603b0
+    m_Address: Stone
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94e78a2b0d1d64e4398888114739ad8c
+    m_Address: Iron
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c945f709f4ae6e4f9b7ecc2e285d575
+    m_Address: Boat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - item
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bcbc5ec66a05cd48a8289e5cf30950d
+    m_Address: Iron Sword
     m_ReadOnly: 0
     m_SerializedLabels:
     - item

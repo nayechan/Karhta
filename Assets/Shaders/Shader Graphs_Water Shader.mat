@@ -56,24 +56,24 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
     - _Cull: 0
-    - _Depth: 1
+    - _Depth: 2
     - _Displacement: 0.3
     - _DstBlend: 10
     - _Normal_Strength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 1
+    - _Smoothness: 0.855
     - _SrcBlend: 1
-    - _Strength: 0.223
+    - _Strength: 1
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Deep_Water_Color: {r: 0, g: 0.11145078, b: 0.2264151, a: 1}
-    - _Shallow_Water_Color: {r: 0, g: 0.11217981, b: 0.3018868, a: 0.8}
+    - _Deep_Water_Color: {r: 0, g: 0.32944474, b: 0.67058825, a: 0.7529412}
+    - _Shallow_Water_Color: {r: 0, g: 0.7184715, b: 1, a: 0.23529412}
   m_BuildTextureStacks: []
 --- !u!114 &6528505105530969381
 MonoBehaviour:

@@ -21,7 +21,7 @@ namespace InGame.Player
         public long CurrentXP { get; private set; }
         public long CurrentHp { get; private set; }
         public bool isSpawned { get; private set; }
-        public long MaxHp => currentLevel * 17 + 4 + Mathf.CeilToInt(PlayerStatData.StatHp);
+        public long MaxHp => currentLevel * 17 + 4 + Mathf.RoundToInt(allStatMultiplier * PlayerStatData.StatHp);
         
         public long MaxXp => (long)(Mathf.Pow(currentLevel, 1.4f) * 14) + 15;
 
@@ -43,12 +43,17 @@ namespace InGame.Player
         private bool isBlockMovement;
         private int waterTriggersCount = 0;
         private bool isUnderWater;
+        public float xpMultiplier { get; private set; }
+        public float allStatMultiplier { get; private set; }
 
         [SerializeField] private bool isGravityPresent = false;
         [SerializeField] private Vector3 boxCastSize, boxCastOffset;
         [SerializeField] private List<Transform> playerListenerScanTransforms;
         [SerializeField] private Transform weaponTransform;
         [SerializeField] private QuickSlotInputSetting inputSetting;
+        [SerializeField] private AttackAnimationController attackAnimationController;
+        [SerializeField] private AnimationClip defaultAttackAnimation;
+        [SerializeField] private GameOverController gameOverController;
         
         private static readonly int HorizontalSpeed = Animator.StringToHash("HorizontalSpeed");
         private static readonly int VerticalSpeed = Animator.StringToHash("VerticalSpeed");
@@ -84,10 +89,6 @@ namespace InGame.Player
             damageablesInArea = new List<IDamageable>();
 
             PlayerItemData = new ItemData();
-            PlayerItemData.AddCount("Silver Sword", 1);
-            PlayerItemData.AddCount("Small HP Potion", 50);
-            PlayerItemData.AddCount("Medium HP Potion", 50);
-            PlayerItemData.AddCount("Large HP Potion", 50);
 
             PlayerQuickSlotData = new QuickSlotData();
             PlayerStatData = new StatData();
@@ -95,6 +96,8 @@ namespace InGame.Player
             CurrentHp = MaxHp;
             CurrentXP = 0;
             currentWeapon = null;
+            
+            attackAnimationController.ChangeAttackAnimation(defaultAttackAnimation);
         }
 
         private void Start()
@@ -102,7 +105,14 @@ namespace InGame.Player
             // Find the CameraController component in the scene
             if (Camera.main != null) cameraController = Camera.main.GetComponent<CameraController>();
 
-            GameStateController.Instance.OnGameLoadFinish += Refresh;
+            GameStateController.Instance.OnGameLoadFinish += OnInit;
+        }
+
+        private void OnInit()
+        {
+            xpMultiplier = PlayerPrefs.GetFloat("currentXpMultiplier", 1);
+            allStatMultiplier = PlayerPrefs.GetFloat("currentAllStatMultiplier", 1);
+            Refresh();
         }
 
         private void Update()
@@ -205,13 +215,17 @@ namespace InGame.Player
 
         private bool IsGrounded()
         {
+            LayerMask layermask = 0;
+            layermask |= 1 << LayerMask.NameToLayer("Ground");
+            layermask |= 1 << LayerMask.NameToLayer("Tree");
+            
             return Physics.BoxCast(
                 transform.position + boxCastOffset,
                 boxCastSize,
                 -transform.up,
                 transform.rotation,
                 1,
-                1 << LayerMask.NameToLayer("Ground")
+                layermask
             );
         }
 
@@ -252,10 +266,23 @@ namespace InGame.Player
                     break;
                 }
                 case "Mob":
+                case "Tree": 
+                case "Mineral":
                 {
                     var damageable = other.GetComponent<IDamageable>();
                     if(damageable != null)
                         damageablesInArea.Add(damageable);
+                    break;
+                }
+                case "Dropitem":
+                {
+                    var dropItem = other.GetComponent<Dropitem>();
+                    if (dropItem != null)
+                    {
+                        PlayerItemData.AddCount(dropItem.itemId, 1);
+                        Destroy(other.gameObject);
+                        Refresh();
+                    }
                     break;
                 }
             }
@@ -278,6 +305,8 @@ namespace InGame.Player
                     break;
                 }
                 case "Mob":
+                case "Tree": 
+                case "Mineral":
                 {
                     var damageable = other.GetComponent<IDamageable>();
                     if(damageable != null)

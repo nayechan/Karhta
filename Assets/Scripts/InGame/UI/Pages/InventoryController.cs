@@ -35,12 +35,12 @@ namespace InGame.UI.Pages
             isInitialized = true;
         }
 
-        public void OnPlayerRefresh(Player.Player player)
+        public void OnPlayerRefresh(Player.Player _player)
         {
             if(!isInitialized)
                 Init();
             
-            var itemCount = player.PlayerItemData.GetAllItemCount();
+            var itemCount = _player.PlayerItemData.GetAllItemCount();
 
             int row, column;
 
@@ -85,15 +85,18 @@ namespace InGame.UI.Pages
                         column * inventoryItemSize,
                         -row * inventoryItemSize
                     );
-                    inventoryItemGameObject.GetComponent<Button>().onClick.AddListener(() =>
+                }
+
+                if (inventoryItem.GetItemId() != itemId || inventoryItem.GetItemCount() != count)
+                {
+                    inventoryItem.GetComponent<Button>().onClick.RemoveAllListeners();
+                    inventoryItem.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         itemInformationModal.SetValue("itemId", itemId);
                         itemInformationModal.gameObject.SetActive(true);
                     });
-                }
-                
-                if(inventoryItem.GetItemId() != itemId || inventoryItem.GetItemCount() != count)
                     inventoryItem.SetData(itemId, count);
+                }
             }
 
             var inventorySize = inventoryTransform.sizeDelta;

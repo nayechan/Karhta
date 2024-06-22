@@ -16,11 +16,16 @@ namespace InGame.Player
             animator = GetComponent<Animator>();
             animator.runtimeAnimatorController = overrideController;
         
-            ChangeAttackAnimation(currentAttackClipIndex);
+            //ChangeAttackAnimation(currentAttackClipIndex);
         
         }
 
-        void ChangeAttackAnimation(int index)
+        public void ChangeAttackAnimation(AnimationClip animationClip)
+        {
+            overrideController["Attack"] = animationClip;
+        }
+
+        public void ChangeAttackAnimation(int index)
         {
             if (index >= 0 && index < attackClips.Length)
             {

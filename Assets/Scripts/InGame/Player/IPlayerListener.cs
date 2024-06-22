@@ -4,6 +4,6 @@ namespace InGame.Player
 {
     public interface IPlayerListener
     {
-        void OnPlayerRefresh(Player player);
+        void OnPlayerRefresh(Player _player);
     }
 }

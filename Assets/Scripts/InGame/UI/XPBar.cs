@@ -4,8 +4,8 @@ using InGame.UI;
 
 public class XPBar : Bar
 {
-    public override void OnPlayerRefresh(Player player)
+    public override void OnPlayerRefresh(Player _player)
     {
-        Refresh(player.CurrentXP, player.MaxXp);
+        Refresh(_player.CurrentXP, _player.MaxXp);
     }
 }

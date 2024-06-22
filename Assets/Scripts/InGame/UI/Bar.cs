@@ -16,6 +16,6 @@ namespace InGame.UI
             foreground.fillAmount = amount / maxAmount;
         }
 
-        public abstract void OnPlayerRefresh(Player.Player player);
+        public abstract void OnPlayerRefresh(Player.Player _player);
     }
 }

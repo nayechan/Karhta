@@ -208,7 +208,7 @@ public static class RuntimePreviewGenerator
 		}
 		finally
 		{
-			Object.DestroyImmediate( previewModel );
+			Object.Destroy( previewModel );
 		}
 
 		return null;
@@ -288,6 +288,8 @@ public static class RuntimePreviewGenerator
 		{
 			SetupCamera();
 			SetLayerRecursively( previewObject );
+
+			PREVIEW_POSITION.y += 10;
 
 			if( !isStatic )
 			{
@@ -453,7 +455,7 @@ public static class RuntimePreviewGenerator
 #endif
 
 			if( shouldCloneModel )
-				Object.DestroyImmediate( previewObject.gameObject );
+				Object.Destroy( previewObject.gameObject );
 			else
 			{
 				if( !wasActive )

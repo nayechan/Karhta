@@ -88,6 +88,9 @@ public class AddressableHelper
 
     public Item GetItem(string itemId)
     {
+        if (string.IsNullOrEmpty(itemId))
+            return null;
+        
         lock (cacheLock)
         {
             return cachedItems.GetValueOrDefault(itemId);
@@ -96,7 +99,7 @@ public class AddressableHelper
 
     public string FindItemId(Item item)
     {
-        return cachedItems.First(itemPair => itemPair.Value == item).Key;
+        return cachedItems.First(itemPair => itemPair.Value.name == item.name).Key;
     }
 
     public bool IsFullyLoaded()

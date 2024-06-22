@@ -7,8 +7,12 @@ namespace InGame.Item.Consumables
     {
         public override void UseItem(Player.Player player)
         {
-            player.PlayerItemData.ReduceCount(AddressableHelper.Instance.FindItemId(this), 1);
-            player.GainHP(amount);
+            var itemId = AddressableHelper.Instance.FindItemId(this);
+            if (player.PlayerItemData.GetCount(itemId) > 0)
+            {
+                player.PlayerItemData.ReduceCount(itemId, 1);
+                player.GainHP(amount);
+            }
         }
         
         public override string GetDescription()

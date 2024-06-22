@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using InGame.Battle;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace InGame.Mob
 {
@@ -17,8 +18,16 @@ namespace InGame.Mob
             Movable,
             Far
         }
-        
-        private DStarLite pathfinder;
+
+        [Serializable]
+        public struct DropTableElement
+        {
+            public Item.Item item;
+            public float probability;
+            public int tryCount;
+            public int minLevel;
+            public int maxLevel;
+        }
         
         [SerializeField] private Player.Player player;
         [SerializeField] private float minDistance = 1.0f, maxDistance = 32.0f;
@@ -28,16 +37,22 @@ namespace InGame.Mob
 
         [SerializeField] private long damageAmount = 4;
         [SerializeField] private long xp = 4;
+        [SerializeField] private List<DropTableElement> dropTable;
 
         [SerializeField] private List<Node> path = null;
         
         
         [field: SerializeField]
         public long MaxHp { get; private set; }
-       
+
+        
         [field: SerializeField]
         public long CurrentHp { get; private set; }
+
+        public int Level { get; private set; }
+
         
+        private DStarLite pathfinder;
         private UniTask movementTask;
         private Animator animator;
         private Vector3 lastPlayerPos;
@@ -46,6 +61,7 @@ namespace InGame.Mob
         private bool isMoving = false;
         private bool isAttackStarted = false;
         private bool isPlayerInArea = false;
+        private bool dead = false;
         
         private CancellationTokenSource cancellationTokenSource;
         private float pathCalculationDelay;
@@ -55,6 +71,9 @@ namespace InGame.Mob
 
         private void OnEnable()
         {
+            Level = 1;
+            
+            dead = false;
             CurrentHp = MaxHp;
             
             pathCalculationDelay = 0.0f;
@@ -126,7 +145,7 @@ namespace InGame.Mob
                 {
                     if (destructionDelay < 0)
                     {
-                        Death();
+                        Death(null);
                     }
                     destructionDelay -= Time.deltaTime;
                     
@@ -159,7 +178,7 @@ namespace InGame.Mob
 
         private bool ShouldRetrievePath()
         {
-            if (Vector3.Distance(player.transform.position, lastPlayerPos) > 16.0f)
+            if (Vector3.Distance(player.transform.position, lastPlayerPos) > 2.5f)
                 return true;
 
             if (pathCalculationDelay <= 0.0f)
@@ -273,22 +292,45 @@ namespace InGame.Mob
 
         public void Damage(IDamageable target)
         {
-            target.TakeDamage(this, damageAmount);
+            if(IsAttackable() && target.IsDamageable())
+                target.TakeDamage(this, damageAmount);
         }
+
+        public bool IsAttackable()
+        {
+            return gameObject.activeSelf && CurrentHp > 0;
+        }
+        public bool IsDamageable()
+        {
+            return gameObject.activeSelf;
+        }
+
+        public IDamageable.DamageableType GetDamageableType()
+        {
+            return IDamageable.DamageableType.Mob;
+        }
+
 
         public void TakeDamage(IAttackable from, long amount)
         {
             CurrentHp -= amount;
             if (CurrentHp <= 0 && gameObject.activeSelf)
             {
-                DelayedDeath(true).Forget();
+                DelayedDeath(from, true).Forget();
             }
         }
 
-        public void Death()
+        public void Death(IAttackable from)
         {
+            from?.OnTargetDead(this);
+
             if(gameObject.activeSelf)
                 MobPoolManager.Instance.Pool.Release(gameObject);
+        }
+        
+        public void OnTargetDead(IDamageable target)
+        {
+            
         }
 
         public void LookDirection(Vector3 direction)
@@ -302,20 +344,38 @@ namespace InGame.Mob
         }
 
 
-        public async UniTaskVoid DelayedDeath(bool itemDrop)
+        public async UniTaskVoid DelayedDeath(IAttackable from, bool itemDrop)
         {
-            animator.SetTrigger("death");
-            await UniTask.WaitForSeconds(1.2f);
-            if (itemDrop)
+            if (!dead)
             {
-                DropItem();
+                dead = true;
+                animator.SetTrigger("death");
+                await UniTask.WaitForSeconds(1.2f);
+                if (itemDrop && gameObject.activeSelf)
+                {
+                    DropItem();
+                }
+                Death(from);
             }
-            Death();
         }
 
         public void DropItem()
         {
             player.GainXP(xp);
+            foreach (var dropData in dropTable)
+            {
+                if(Level < dropData.minLevel || Level > dropData.maxLevel) continue;
+                
+                for (int count = 0; count < dropData.tryCount; ++count)
+                {
+                    var isDrop = Random.value < dropData.probability;
+                    if (isDrop)
+                    {
+                        var randomOffset = new Vector3(Random.value - 0.5f, 0.5f, Random.value - 0.5f);
+                        dropData.item.InstantiateDropItem(transform.position + randomOffset);
+                    }
+                }
+            }
             player.Refresh();
         }
 

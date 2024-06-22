@@ -42,6 +42,12 @@ namespace InGame.Chunk
 
         private void Awake()
         {
+            Random.InitState((int)(System.DateTime.Now.Ticks % int.MaxValue));
+            int lower = Random.Range(0, int.MaxValue);
+            int upper = Random.Range(0, int.MaxValue);
+            uint _seed = (uint)((((long)upper << 32) | (uint)lower) & 0xFFFFFFFF);
+            config.seed = _seed;
+            
             loadedChunks = new Dictionary<Vector2Int, Chunk>();
             loadedWaters = new Dictionary<Vector2Int, Water>();
             chunkGenerationJobs = new Dictionary<Vector2Int, JobHandle>();

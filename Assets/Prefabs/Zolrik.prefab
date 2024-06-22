@@ -106,11 +106,22 @@ MonoBehaviour:
   player: {fileID: 0}
   minDistance: 1
   maxDistance: 32
-  movementCheckRadius: 1.5
+  movementCheckRadius: 0.8
   speed: 4
   attackDelay: 1
   damageAmount: 4
   xp: 4
+  dropTable:
+  - item: {fileID: 11400000, guid: a4282264d17dc3d4c93e13b0ff455e51, type: 2}
+    probability: 1
+    tryCount: 3
+    minLevel: 0
+    maxLevel: 5
+  - item: {fileID: 11400000, guid: a4282264d17dc3d4c93e13b0ff455e51, type: 2}
+    probability: 0.1
+    tryCount: 3
+    minLevel: 0
+    maxLevel: 5
   path: []
   <MaxHp>k__BackingField: 12
   <CurrentHp>k__BackingField: 12
@@ -183,5 +194,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.1, y: 0.5, z: 1}
-  m_Center: {x: 0, y: 0.7, z: 0.6}
+  m_Size: {x: 1.2, y: 0.5, z: 1.5}
+  m_Center: {x: 0, y: 0.7, z: 0.7}

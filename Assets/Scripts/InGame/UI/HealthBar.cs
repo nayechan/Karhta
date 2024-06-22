@@ -2,9 +2,9 @@ namespace InGame.UI
 {
     public class HealthBar : Bar
     {
-        public override void OnPlayerRefresh(Player.Player player)
+        public override void OnPlayerRefresh(Player.Player _player)
         {
-            Refresh(player.CurrentHp, player.MaxHp);
+            Refresh(_player.CurrentHp, _player.MaxHp);
         }
     }
 }

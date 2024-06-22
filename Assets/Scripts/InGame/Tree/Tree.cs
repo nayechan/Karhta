@@ -1,6 +1,8 @@
 ﻿using System;
 using InGame.Battle;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace InGame.Tree
 {
@@ -12,25 +14,48 @@ namespace InGame.Tree
         [field: SerializeField]
         public long MaxHp { get; private set; }
 
-        private void Awake()
+        [SerializeField] protected GameObject breakParticlePrefab;
+
+        public virtual bool IsDamageable()
+        {
+            if (gameObject.IsDestroyed())
+                return false;
+            
+            return gameObject.activeSelf;
+        }
+
+        protected virtual void Awake()
         {
             CurrentHp = MaxHp;
         }
 
-        public void TakeDamage(IAttackable from, long amount)
+        public virtual void TakeDamage(IAttackable from, long amount)
         {
             CurrentHp -= amount;
 
             if (CurrentHp <= 0)
             {
-                Death();
+                Death(from);
             }
         }
 
-        public void Death()
+        public virtual void Death(IAttackable from)
         {
-            Destroy(gameObject, 1.0f);
+            from?.OnTargetDead(this);
+            TreeGenerator.Instance.RemoveTree(this);
+            Instantiate(breakParticlePrefab, transform.position, Quaternion.identity);
+            
+            Destroy(gameObject);
         }
 
+        public virtual string GetTreeType()
+        {
+            return "Tree";
+        }
+
+        public virtual IDamageable.DamageableType GetDamageableType()
+        {
+            return IDamageable.DamageableType.Tree;
+        }
     }
 }

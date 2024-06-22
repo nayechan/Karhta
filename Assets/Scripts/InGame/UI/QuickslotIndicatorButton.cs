@@ -16,11 +16,14 @@ namespace InGame.UI
         
         public void OpenSlot()
         {
-            if (!string.IsNullOrEmpty(itemId))
-            {
-                modal.SetValue("itemId", itemId);
-                modal.gameObject.SetActive(true);
-            }
+            if (string.IsNullOrEmpty(itemId))
+                return;
+            
+            if (!AddressableHelper.Instance.GetItem(itemId).IsEquippable())
+                return;
+            
+            modal.SetValue("itemId", itemId);
+            modal.gameObject.SetActive(true);
         }
     }
 }

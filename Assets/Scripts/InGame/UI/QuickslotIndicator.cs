@@ -17,7 +17,7 @@ namespace InGame.UI
 
         [SerializeField] protected TMP_Text keyHint, countText;
 
-        public virtual void OnPlayerRefresh(Player.Player player)
+        public virtual void OnPlayerRefresh(Player.Player _player)
         {
             image.color = Color.clear;
             if (countText != null)
@@ -27,10 +27,10 @@ namespace InGame.UI
             
             if (keyHint != null)
             {
-                keyHint.text = player.GetKeyBind(index);
+                keyHint.text = _player.GetKeyBind(index).Replace("Alpha","");
             }
             
-            itemId = player.PlayerQuickSlotData.GetSlot(index);
+            itemId = _player.PlayerQuickSlotData.GetSlot(index);
             
             if (string.IsNullOrEmpty(itemId))
             {
@@ -49,7 +49,7 @@ namespace InGame.UI
             if (countText != null)
             {
                 countText.gameObject.SetActive(item.IsItemCountShown());
-                countText.text = player.PlayerItemData.GetCount(itemId).ToString("N0");
+                countText.text = _player.PlayerItemData.GetCount(itemId).ToString("N0");
             }
         }
     }

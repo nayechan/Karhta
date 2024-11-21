@@ -29,7 +29,7 @@
 
 - 각 **Chunk**와 물 객체는 **ChunkPoolManager**와 **WaterPoolManager**에서 관리하여 메모리 효율성을 극대화.
 
-## 2. 전투 시스템
+## 전투 시스템
 
 ### 에셋 관리
 

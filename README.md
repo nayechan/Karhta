@@ -11,32 +11,32 @@
 
 # 주요 시스템
 
-## 1. **지형 생성 시스템**
+## 지형 생성 시스템
 
-### a) Heightmap 생성
+### Heightmap 생성
 
 - **Simplex Noise**를 활용하여 빠르고 자연스러운 랜덤 높이 값을 생성.
 - **노이즈 가공**:
     - **Offset 설정**: 현실적인 지형 생성을 위해 각 계층 노이즈에 Bitmask를 적용하여 노이즈 값을 조정.
     - **주파수/진폭 조정**: Frequency와 Amplitude 값을 조정한 후, 각 레이어를 합산해 균형 잡힌 지형을 생성.
 
-### b) Terrain 생성
+### Terrain 생성
 
 - **Job System**과 **UniTask**를 활용하여 비동기 처리 및 멀티스레딩으로 지형 생성.
 - **우선순위 큐**를 통해 생성된 Heightmap 데이터를 관리하며, 업데이트 시 최우선 데이터부터 GameObject로 변환.
 
-### c) Terrain Pooling
+### Terrain Pooling
 
 - 각 **Chunk**와 물 객체는 **ChunkPoolManager**와 **WaterPoolManager**에서 관리하여 메모리 효율성을 극대화.
 
-## 2. **전투 시스템**
+## 2. 전투 시스템
 
-### a) 에셋 관리
+### 에셋 관리
 
 - **ScriptableObject**와 **Addressable Assets**를 활용하여 아이템 데이터를 표준화.
 - **AddressableHelper**를 통해 에셋을 주소와 매핑하여 관리 및 초기화 효율성을 강화.
 
-### b) 전투 진행
+### 전투 진행
 
 - **인터페이스 설계**:
     - `IAttackable`: 공격 가능한 대상 정의.

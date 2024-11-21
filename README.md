@@ -6,9 +6,6 @@
 
 - 사용 엔진 / 프레임워크 : Unity
 - 기간 : 2024. 5. 30 ~ 2024. 8. 30
-    
-    [GitHub - nayechan/Karhta: Open-world 3D RPG Game](https://github.com/nayechan/Karhta)
-    
 
 ---
 
